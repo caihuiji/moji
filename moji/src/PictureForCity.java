@@ -17,9 +17,11 @@ public class PictureForCity {
 	public static final String STAND_URL_PARAM = "UserID=16396308&Platform=Android&Version=10023802&BaseOSVer=10&PartnerKey=5068&Model=MB525&Device=phone&VersionType=1&SnsID=5365870";
 
 	private DefaultHttpClient client;
+	private String city;
 
-	public PictureForCity(DefaultHttpClient client) {
+	public PictureForCity(DefaultHttpClient client, String city) {
 		this.client = client;
+		this.city = city;
 	}
 
 	private String fetchUrl = "http://ugc.moji001.com/sns/GetPictureFlowID?" + STAND_URL_PARAM
@@ -27,8 +29,8 @@ public class PictureForCity {
 
 	private String pictureUrl = "http://ugc.moji001.com/sns/GetPictureFlow?" + STAND_URL_PARAM + "&DV=200&CityID=";
 
-	public String fetchId(String cityId) throws IllegalStateException, IOException {
-		String newFetchUrl = fetchUrl + cityId;
+	public String fetchId() throws IllegalStateException, IOException {
+		String newFetchUrl = fetchUrl + city;
 		HttpGet get = new HttpGet(newFetchUrl);
 		initHttpGet(get);
 
@@ -57,9 +59,9 @@ public class PictureForCity {
 
 	}
 
-	public Element getXml(String citryId, String picID) throws ParserConfigurationException, IllegalStateException,
-			SAXException, IOException {
-		String newPictureUrl = pictureUrl + citryId + "&PicID=" + picID;
+	public Element getXml(String picIDs) throws ParserConfigurationException, IllegalStateException, SAXException,
+			IOException {
+		String newPictureUrl = pictureUrl + city + "&PicID=" + picIDs;
 
 		HttpGet get = new HttpGet(newPictureUrl);
 		initHttpGet(get);
@@ -81,7 +83,6 @@ public class PictureForCity {
 		} finally {
 			get.releaseConnection();
 		}
-
 
 	}
 
