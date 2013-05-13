@@ -2,9 +2,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 public class Commenter {
@@ -21,10 +24,11 @@ public class Commenter {
 	}
 
 	public boolean comment(Map<String,String> param ) throws IllegalStateException, IOException {
-		param.put("Reply", comment);
+		param.put("Reply", URIUtil.encodeQuery(comment));
 
 		String newCommentUrl = Utils.urlGenerate(COMMENT_URL, param);
 
+		
 		HttpGet get = new HttpGet(newCommentUrl);
 
 		get.setHeader("User-Agent", "Apache-HttpClient/UNAVAILABLE (java 1.4)");
