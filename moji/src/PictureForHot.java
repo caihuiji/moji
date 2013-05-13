@@ -14,60 +14,42 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class PictureForCity implements PicutreFetch {
+public class PictureForHot implements PicutreFetch {
 
 
 	private DefaultHttpClient client;
 	
-	private String FETCH_URL = "http://ugc.moji001.com/sns/GetPictureFlowID";
+	private String HOT_URL = "http://ugc.moji001.com/sns/GetBoutiquePictureFlow";
 	
 	
-	private String PICTURE_URL = "http://ugc.moji001.com/sns/GetPictureFlow";
 
-	public PictureForCity(DefaultHttpClient client) {
+	public PictureForHot(DefaultHttpClient client) {
 		this.client = client;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see PicutreFetch#fetchId(java.util.Map)
+	 */
+	@Override
 	public String fetchId(Map<String,String> param ) throws IllegalStateException, IOException {
-		param.put("DV", "200");
-		param.put("Step", "20");
-		param.put("QT", "1");
-		String fetchUrl = Utils.urlGenerate(FETCH_URL, param);
 		
-		HttpGet get = new HttpGet(fetchUrl);
-		initHttpGet(get);
-
-		HttpResponse httpResponse = null;
-
-		try {
-			httpResponse = client.execute(get);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		Scanner sc = new Scanner(httpResponse.getEntity().getContent());
-
-		int i = 0;
-		try {
-			while (sc.hasNext()) {
-				if (++i >= 3) {
-					return sc.next();
-				}
-				sc.next();
-			}
-		} finally {
-			get.releaseConnection();
-		}
 		return "";
 
 	}
 
+	/* (non-Javadoc)
+	 * @see PicutreFetch#getXml(java.util.Map)
+	 */
+	@Override
 	public Element getXml(  Map<String,String> param ) throws ParserConfigurationException, IllegalStateException, SAXException,
 			IOException {
 		
 		param.put("DV", "200");
-		String newPictureUrl = Utils.urlGenerate(PICTURE_URL, param);
+		param.put("Position","");
+		param.put("Step","50");
+		
+		String newPictureUrl = Utils.urlGenerate(HOT_URL, param);
 
 		HttpGet get = new HttpGet(newPictureUrl);
 		initHttpGet(get);
