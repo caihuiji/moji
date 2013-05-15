@@ -1,3 +1,4 @@
+package per.chj;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,42 +15,57 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class PictureForHot implements PicutreFetch {
-
+public class PictureForCity implements PicutreFetch {
 
 	private DefaultHttpClient client;
-	
-	private String HOT_URL = "http://ugc.moji001.com/sns/GetBoutiquePictureFlow";
-	
-	
 
-	public PictureForHot(DefaultHttpClient client) {
+	private String FETCH_URL = "http://ugc.moji001.com/sns/GetPictureFlowID";
+
+	private String PICTURE_URL = "http://ugc.moji001.com/sns/GetPictureFlow";
+
+	public PictureForCity(DefaultHttpClient client) {
 		this.client = client;
 	}
 
+	public String fetchId(Map<String, String> param) throws IllegalStateException, IOException {
+		param.put("DV", "200");
+		param.put("Step", "20");
+		param.put("QT", "1");
+		String fetchUrl = Utils.urlGenerate(FETCH_URL, param);
 
-	/* (non-Javadoc)
-	 * @see PicutreFetch#fetchId(java.util.Map)
-	 */
-	@Override
-	public String fetchId(Map<String,String> param ) throws IllegalStateException, IOException {
-		
+		HttpGet get = new HttpGet(fetchUrl);
+		initHttpGet(get);
+
+		HttpResponse httpResponse = null;
+
+		try {
+			httpResponse = client.execute(get);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		Scanner sc = new Scanner(httpResponse.getEntity().getContent());
+
+		int i = 0;
+		try {
+			while (sc.hasNext()) {
+				if (++i >= 3) {
+					return sc.next();
+				}
+				sc.next();
+			}
+		} finally {
+			get.releaseConnection();
+		}
 		return "";
 
 	}
 
-	/* (non-Javadoc)
-	 * @see PicutreFetch#getXml(java.util.Map)
-	 */
-	@Override
-	public Element getXml(  Map<String,String> param ) throws ParserConfigurationException, IllegalStateException, SAXException,
-			IOException {
-		
+	public Element getXml(Map<String, String> param) throws ParserConfigurationException, IllegalStateException,
+			SAXException, IOException {
+
 		param.put("DV", "200");
-		param.put("Position","");
-		param.put("Step","50");
-		
-		String newPictureUrl = Utils.urlGenerate(HOT_URL, param);
+		String newPictureUrl = Utils.urlGenerate(PICTURE_URL, param);
 
 		HttpGet get = new HttpGet(newPictureUrl);
 		initHttpGet(get);
@@ -62,7 +78,8 @@ public class PictureForHot implements PicutreFetch {
 		}
 
 		try {
-			if(httpResponse.getEntity().getContentEncoding() != null && httpResponse.getEntity().getContentEncoding().getValue().indexOf("gzip") != -1){
+			if (httpResponse.getEntity().getContentEncoding() != null
+					&& httpResponse.getEntity().getContentEncoding().getValue().indexOf("gzip") != -1) {
 				httpResponse.setEntity(new GzipDecompressingEntity(httpResponse.getEntity()));
 			}
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
