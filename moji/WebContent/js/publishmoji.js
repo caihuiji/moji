@@ -103,7 +103,7 @@ $(function (){
 						},
 						ajaxComplete:function()
 						{
-							self._$uploading.text("上传成功.");
+						
 						},			
 						success: function (data, status)
 						{
@@ -112,7 +112,7 @@ $(function (){
 									alert("上传文件失败!");
 							}
 							self.data.path = data.path;
-							window.location = data.path;
+							self._$uploading.html('上传成功(<a target="_blank" href="'+data.path+'">查看图片</a>)');
 						
 						},
 						error: function (data, status, e)
