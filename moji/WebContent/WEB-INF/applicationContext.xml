@@ -15,10 +15,11 @@
 
 	<!-- 自动扫描的包名 -->
 	<context:component-scan base-package="per.chj"></context:component-scan>
-
+	
+	
 	<!-- 默认的注解映射的支持 -->
 	<mvc:annotation-driven />
-
+	
 	<!-- 视图解释类 -->
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -48,6 +49,6 @@
 		<property name="maxInMemorySize">
 			<value>4096</value>
 		</property>
-   </bean>
+	</bean>
 
 </beans> 

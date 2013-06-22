@@ -1,4 +1,4 @@
-$(function (){
+(function (){
 	
 	window.SendMoji = function (){
 		this.initialize();
@@ -19,8 +19,10 @@ $(function (){
 		
 		data : {
 			time : null,
-			image : null,
+			path : null,
 			text : null,
+			image : null,
+			type : null
 		},
 		
 		
@@ -39,23 +41,41 @@ $(function (){
 		
 		generateDate : function (){
 			var currentDate = this._$date.val() +" "+ this._$hour.val() +":"+ this._$minute.val()+":00";
-			console.log(currentDate);
 			return currentDate;
 		},
 		
+		
 		sendTime : function (e){
-			alert("sendTime");
+			this.data.time = this._$date.val() +" "+this._$hour.val()+":"+this._$minute.val()+":"+this._$minute.val();
+			this.data.type = "time";
+			this.validate() && this.submit();
 		},
 		
 		
 		sendNow : function (e){
-			alert("sendNow");
+			this.data.type = "now";
+			this.data.time = null;
+			this.submit();
+		},
+		
+		submit : function (){
+			this.data.text =  this._$publish_textarea.val() ;
+			console.log(this.data);
+			$.ajax({
+				url : SendMoji.path + "send/moji",
+				type : "post",
+				data : this.data,
+				success : function (data){
+					
+				}
+			});
+			
 		},
 		
 		attachEvent : function (){
 			var self = this;
 			this._$postTimeBtn.click(function (e){
-				self.validate() && self.sendTime(e) ;
+				 self.sendTime(e) ;
 			});
 			
 			this._$postNowBtn.click(function (e){
@@ -93,7 +113,7 @@ $(function (){
 		        $.ajaxFileUpload
 		        (
 		            {
-		            	url:'file/uploadFile',
+		            	url:SendMoji.path + 'file/uploadFile',
 						secureuri:false,
 						fileElementId:'ajaxImagesUpload',
 						dataType: 'json',
@@ -112,6 +132,7 @@ $(function (){
 									alert("上传文件失败!");
 							}
 							self.data.path = data.path;
+							self.data.image = data.image;
 							self._$uploading.html('上传成功(<a target="_blank" href="'+data.path+'">查看图片</a>)');
 						
 						},
@@ -125,6 +146,6 @@ $(function (){
 		
 	};
 	
-	new SendMoji();
 	
-})
+	
+})();

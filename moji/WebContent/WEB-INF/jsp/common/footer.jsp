@@ -3,6 +3,6 @@
 
 <div id="footer">
 </div>
-<script src="js/jquery-1.7.2.min.js"></script>
-<script src="js/date/WdatePicker.js"></script>
-<script src="js/ajaxfileupload.js"></script>
+<script src="<%=basePath %>js/jquery-1.7.2.min.js"></script>
+<script src="<%=basePath %>js/date/WdatePicker.js"></script>
+<script src="<%=basePath %>js/ajaxfileupload.js"></script>
