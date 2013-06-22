@@ -8,18 +8,20 @@ $(function (){
 	SendMoji.prototype = {
 		
 		_$container : null ,
-		
 		_$postTimeBtn : null,
-		
 		_$postNowBtn : null,
-		
 		_$publish_textarea : null,
-		
 		_$uploadImage : null,
-		
+		_$uploading : null,
 		_$date : null,
 		_$hour : null,
 		_$minute : null,
+		
+		data : {
+			time : null,
+			image : null,
+			text : null,
+		},
 		
 		
 		initialize : function (){
@@ -30,7 +32,7 @@ $(function (){
 			this._$date = this._$container.find("#pickdater_0");
 			this._$hour = this._$container.find("#hour_0");
 			this._$minute = this._$container.find("#minute_0");
-			this._$uploadImage = this._$container.find(".iptFile");
+			this._$uploading = this._$container.find(".uploading");
 			
 			this.attachEvent();
 		},
@@ -59,6 +61,20 @@ $(function (){
 			this._$postNowBtn.click(function (e){
 				self.sendNow(e);
 			});
+			
+			var listener = function (){
+				self._$uploadImage = self._$container.find("#ajaxImagesUpload");
+				self._$uploadImage.off("change").change(function (e){
+					self.updateImages();
+				});
+				
+				setTimeout(function (){
+					listener();
+				},100);
+			};
+			
+			listener();
+			
 		},
 		
 		validate : function (){
@@ -67,6 +83,44 @@ $(function (){
 				return false;
 			}
 			return true;
+		},
+		
+		
+		updateImages : function (){
+		        var self = this;
+		        
+		        
+		        $.ajaxFileUpload
+		        (
+		            {
+		            	url:'file/uploadFile',
+						secureuri:false,
+						fileElementId:'ajaxImagesUpload',
+						dataType: 'json',
+						ajaxSend:function()
+						{
+							self._$uploading.text("正在上传...");
+						},
+						ajaxComplete:function()
+						{
+							self._$uploading.text("上传成功.");
+						},			
+						success: function (data, status)
+						{
+							if(data.status == 'error')
+							{
+									alert("上传文件失败!");
+							}
+							self.data.path = data.path;
+							window.location = data.path;
+						
+						},
+						error: function (data, status, e)
+						{
+							alert(e);
+						}
+		            }
+		        );
 		}
 		
 	};

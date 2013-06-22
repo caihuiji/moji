@@ -1,4 +1,3 @@
-
 jQuery.extend({
 	
 
@@ -63,13 +62,16 @@ jQuery.extend({
         // Watch for a new set of requests
         if ( s.global && ! jQuery.active++ )
 		{
-			jQuery.event.trigger( "ajaxStart" );
+        	s.ajaxStart && s.ajaxStart();
+			//jQuery.event.trigger( "ajaxStart" );
 		}            
         var requestDone = false;
         // Create the request object
         var xml = {}   
-        if ( s.global )
-            jQuery.event.trigger("ajaxSend", [xml, s]);
+        if ( s.global ){
+        	s.ajaxSend && s.ajaxSend(xml, s);
+        	//jQuery.event.trigger("ajaxSend", [xml, s]);
+        }
         // Wait for a response to come back
         var uploadCallback = function(isTimeout)
 		{			
@@ -106,8 +108,10 @@ jQuery.extend({
                             s.success( data, status );
     
                         // Fire the global callback
-                        if( s.global )
-                            jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+                        if( s.global ){
+                        	s.ajaxSuccess && s.ajaxSuccess(xml, s);
+                        	//jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+                        }
                     } else
                         jQuery.handleError(s, xml, status);
                 } catch(e) 
@@ -117,18 +121,22 @@ jQuery.extend({
                 }
 
                 // The request was completed
-                if( s.global )
-                    jQuery.event.trigger( "ajaxComplete", [xml, s] );
+                if( s.global ){
+                	s.ajaxComplete && s.ajaxComplete(xml, s);
+                	//jQuery.event.trigger( "ajaxComplete", [xml, s] );
+                }
 
                 // Handle the global AJAX counter
-                if ( s.global && ! --jQuery.active )
-                    jQuery.event.trigger( "ajaxStop" );
+                if ( s.global && ! --jQuery.active ){
+                	s.ajaxStop && s.ajaxStop();
+                	//jQuery.event.trigger( "ajaxStop", [xml, s] );
+                }
 
                 // Process result
                 if ( s.complete )
                     s.complete(xml, status);
 
-                jQuery(io).unbind()
+                jQuery(io).unbind();
 
                 setTimeout(function()
 									{	try 
